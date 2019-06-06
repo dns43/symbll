@@ -76,3 +76,11 @@ sudo LLVM_CONFIG_PATH=/usr/lib/llvm-3.3/bin/llvm-config pip install --user llvmp
 # 8) symbll
 cd /home/vagrant/concolic/
 git clone https://github.com/dns43/symbll.git
+cd symbll
+protoc plog.proto
+
+cd /home/vagrant/concolic/
+git clone https://github.com/avatartwo/bar18_avatar2
+cp bar18_avatar2/03_panda_rr/ bar18_avatar2/04_concolic
+cp -r bar18_avatar2/03_panda_rr/ bar18_avatar2/04_concolic
+mv symbll/firmware.bin bar18_avatar2/04_concolic/firmware.bin
