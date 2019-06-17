@@ -35,10 +35,14 @@ wget http://www.s3.eurecom.fr/~muench/data/firefox-52.0.en-US.linux-x86_64.tar.b
 tar -xvf /vagrant/02_firefox/firefox-52.0.en-US.linux-x86_64.tar.bz2 -C /home/vagrant/
 ln -s  /home/vagrant/firefox/firefox-bin /vagrant/02_firefox/firefox
 
-# dns43
+# dns4
+# dependencies
+sudo apt-get install -y libglib2.0-dev
+sudo apt-get install -y  libunwind-dev
+
 # 5) avatar-panda 
 # we'll need svn to install LLVM later
-sudo apt-get install subversioni
+sudo apt-get install -y subversion
 # project folder
 mkdir concolic
 cd concolic/
@@ -48,36 +52,44 @@ git remote add upstream https://github.com/panda-re/panda
 git fetch upstream
 git merge upstream/llvm_trace2
 git checkout llvm_trace2
-sudo apt-get install libunwind-dev
-sudo apt-get install libglib2.2-dev
+sudo apt-get install -y libunwind-dev
+sudo apt-get install -y libglib2.2-dev
 sudo add-apt-repository ppa:phulin/panda
 sudo apt-get update
 git submodule update --init pixman
 git submodule update --init dtc
 
-sudo apt-get install autoconf
-sudo apt-get install libtool
+sudo apt-get install -y autoconf
+sudo apt-get install -y libtool
+
 # dang it, I have to edit this file programmatically
-sudo vim /etc/apt/sources.list
+#sudo vim /etc/apt/sources.list
+sudo apt-get install -y python-pip git protobuf-compiler protobuf-c-compiler   libprotobuf-c0-dev libprotoc-dev python-protobuf libelf-dev   libcapstone-dev libdwarf-dev python-pycparser llvm-3.3 clang-3.3 libc++-dev
+
 
 mkdir build && cd build
 ../panda/scripts/install_ubuntu.sh 
 
 # 6) z3py
 cd /home/vagrant/concolic/
-git clone https://github.com/Z4Prover/z3.git
+git clone https://github.com/Z3Prover/z3.git
 cd z3
 python scripts/mk_make.py --python
+cd build
+make
 sudo make install
 
 # 7) llvmpy
-sudo LLVM_CONFIG_PATH=/usr/lib/llvm-3.3/bin/llvm-config pip install --user llvmpy
+#sudo pip install --upgrade pip
+#sudo LLVM_CONFIG_PATH=/usr/lib/llvm-3.3/bin/llvm-config pip install --user llvmpy
+#sudo -H LLVM_CONFIG_PATH=/usryyp/lib/llvm-3.3/bin/llvm-config pip install --user llvmpy
+sudo -H LLVM_CONFIG_PATH=/usr/lib/llvm-3.3/bin/llvm-config pip2 install llvmpy
 
 # 8) symbll
 cd /home/vagrant/concolic/
 git clone https://github.com/dns43/symbll.git
 cd symbll
-protoc plog.proto
+protoc --python_out=. plog.proto
 
 cd /home/vagrant/concolic/
 git clone https://github.com/avatartwo/bar18_avatar2
